@@ -1,6 +1,5 @@
-
-export TORQUEBOX_HOME=/opt/torquebox-current
+export TORQUEBOX_HOME=<%= node[:torquebox][:current] %>
 export JBOSS_HOME=$TORQUEBOX_HOME/jboss
 export JRUBY_HOME=$TORQUEBOX_HOME/jruby
-
-export PATH=$JRUBY_HOME/bin:$PATH
+export JRUBY_OPTS=--1.9
+export PATH=$PATH:$JRUBY_HOME/bin

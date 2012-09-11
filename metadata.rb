@@ -1,14 +1,16 @@
 # -*- encoding : utf-8 -*-
-maintainer       "Jorge Falcão"
-maintainer_email "jlbfalcao@gmail.com"
+maintainer       "Shuky Dvir"
+maintainer_email "shuky@tooveo.com"
 license          "Apache 2.0"
 description      "Installs/Configures torquebox"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "0.0.1"
 
-depends "java"
-depends "install_from"
+%w{ java git }.each do |cb|
+  depends cb
+end
 
-supports "ubuntu"
-supports "debian"
+%w{ ubuntu debian }.each do |os|
+  supports os
+end
 
