@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 
 
 default[:torquebox][:version] = "2.0.0.beta3"

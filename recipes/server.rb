@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 
 
 version = node[:torquebox][:version]
