@@ -1,12 +1,8 @@
 # -*- encoding : utf-8 -*-
 
-version = node[:torquebox][:version]
-prefix = node[:torquebox][:prefix]
-current = node[:torquebox][:current]
-
-package "unzip"
-package "upstart"
-include_recipe "java"
+%w{ unzip upstart openjdk-6-jdk }.each do |p|
+  package p
+end
 
 
 user node[:torquebox][:user] do
@@ -16,8 +12,8 @@ user node[:torquebox][:user] do
 end
 
 directory node[:torquebox][:base] do
-  owner "torquebox"
-  group "torquebox"
+  owner node[:torquebox][:user]
+  group node[:torquebox][:group]
   mode "0755"
   action :create
 end
@@ -26,17 +22,17 @@ remote_file "#{node[:torquebox][:base]}/torquebox-dist-#{node[:torquebox][:versi
   source node[:torquebox][:url]
   action :create_if_missing
   mode "0644"
-  owner 'torquebox'
-  group 'torquebox'
-  not_if{ File.exists?(prefix) }
+  owner node[:torquebox][:user]
+  group node[:torquebox][:group]
+  not_if{ File.exists?(node[:torquebox][:prefix]) }
 end
 
 execute "unzip torquebox" do
   cwd node[:torquebox][:base]
   command "unzip torquebox-dist-#{node[:torquebox][:version]}-bin.zip -d #{node[:torquebox][:base]}"
   creates node[:torquebox][:prefix]
-  user 'torquebox'
-  group 'torquebox'
+  user node[:torquebox][:user]
+  group node[:torquebox][:group]
   action :run
 end
 
@@ -45,10 +41,10 @@ file "#{node[:torquebox][:base]}/torquebox-dist-#{node[:torquebox][:version]}-bi
   only_if{ File.exists?("#{node[:torquebox][:base]}/torquebox-dist-#{node[:torquebox][:version]}-bin.zip") }
 end
 
-link current do
-  to prefix
-  owner 'torquebox'
-  group 'torquebox'
+link node[:torquebox][:current] do
+  to node[:torquebox][:prefix]
+  owner node[:torquebox][:user]
+  group node[:torquebox][:group]
 end
 
 template "/etc/profile.d/torquebox.sh" do
@@ -56,11 +52,14 @@ template "/etc/profile.d/torquebox.sh" do
   source "torquebox.erb"
 end
 
-execute "copy upstart" do
-  command "cp #{node[:torquebox][:current]}/share/init/torquebox.conf /etc/init/ | sudo sed -i '1 i start on runlevel [2345]' /etc/init/torquebox.conf | sudo sed -i 's/\\/opt\\/torquebox/\\/opt\\/torquebox\\/current/g' /etc/init/torquebox.conf"
-  creates "/etc/init/torquebox.conf"
-  user 'root'
+template "/etc/init/torquebox.conf" do
+  source "torquebox_upstart.erb"
+  owner 'root'
   group 'root'
-  action :run
+end
+
+service "torquebox" do
+  action :start
+  start_command "start torquebox"
 end
 
