@@ -4,8 +4,8 @@ package 'git-core'
 
 directory "/var/www/" do
   recursive true
-  owner 'torquebox'
-  group 'torquebox'
+  owner node[:torquebox][:user]
+  group node[:torquebox][:group]
 end
 
 git node[:torquebox][:backstage][:home] do
@@ -13,16 +13,16 @@ git node[:torquebox][:backstage][:home] do
   revision "HEAD"
   destination node[:torquebox][:backstage][:home]
   action :sync
-  user 'torquebox'
-  group 'torquebox'
+  user node[:torquebox][:user]
+  group node[:torquebox][:group]
 end
 
 execute "bundle install" do
   command "jruby -S bundle install"
   cwd node[:torquebox][:backstage][:home]
   not_if "jruby -S bundle check"
-  user 'torquebox'
-  group 'torquebox'
+  user node[:torquebox][:user]
+  group node[:torquebox][:group]
   environment ({
     'TORQUEBOX_HOME'=> node[:torquebox][:current],
     'JBOSS_HOME'=> "#{node[:torquebox][:current]}/jboss",
@@ -35,8 +35,8 @@ execute "bundle install" do
   command "bin/backstage deploy --secure=#{node[:torquebox][:backstage][:user]}:#{node[:torquebox][:backstage][:password]}" if node[:torquebox][:backstage][:auth]
   command "bin/backstage deploy" unless node[:torquebox][:backstage][:auth]
   cwd node[:torquebox][:backstage][:home]
-  user 'torquebox'
-  group 'torquebox'
+  user node[:torquebox][:user]
+  group node[:torquebox][:group]
   environment ({
     'TORQUEBOX_HOME'=> node[:torquebox][:current],
     'JBOSS_HOME'=> "#{node[:torquebox][:current]}/jboss",
