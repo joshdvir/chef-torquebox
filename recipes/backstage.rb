@@ -31,7 +31,7 @@ execute "bundle install" do
   })
 end
 
-execute "bundle install" do
+execute "backstage deploy" do
   command "bin/backstage deploy --secure=#{node[:torquebox][:backstage][:user]}:#{node[:torquebox][:backstage][:password]}" if node[:torquebox][:backstage][:auth]
   command "bin/backstage deploy" unless node[:torquebox][:backstage][:auth]
   cwd node[:torquebox][:backstage][:home]
