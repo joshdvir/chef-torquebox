@@ -9,8 +9,9 @@ default[:torquebox][:user] = "torquebox"
 default[:torquebox][:group] = "torquebox"
 
 
-default[:torquebox][:backstage][:user] = "shuky"
-default[:torquebox][:backstage][:password] = "111081"
+default[:torquebox][:backstage][:user] = "change"
+default[:torquebox][:backstage][:password] = "me"
 default[:torquebox][:backstage][:gitrepo] = "git://github.com/torquebox/backstage.git"
 default[:torquebox][:backstage][:home] = "/var/www/backstage"
+default[:torquebox][:backstage][:auth] = true
 
