@@ -20,7 +20,6 @@ end
 execute "bundle install" do
   command "jruby -S bundle install"
   cwd node[:torquebox][:backstage][:home]
-  not_if "jruby -S bundle check"
   user node[:torquebox][:user]
   group node[:torquebox][:group]
   environment ({
@@ -32,8 +31,8 @@ execute "bundle install" do
 end
 
 execute "backstage deploy" do
-  command "bin/backstage deploy --secure=#{node[:torquebox][:backstage][:user]}:#{node[:torquebox][:backstage][:password]}" if node[:torquebox][:backstage][:auth]
-  command "bin/backstage deploy" unless node[:torquebox][:backstage][:auth]
+  command "bundle exec bin/backstage deploy --secure=#{node[:torquebox][:backstage][:user]}:#{node[:torquebox][:backstage][:password]}" if node[:torquebox][:backstage][:auth]
+  command "bundle exec bin/backstage deploy" unless node[:torquebox][:backstage][:auth]
   cwd node[:torquebox][:backstage][:home]
   user node[:torquebox][:user]
   group node[:torquebox][:group]
